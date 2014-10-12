@@ -663,9 +663,9 @@ module VBD = struct
 	let attach_and_activate task xs vm vbd = function
 		| None ->
 			(* XXX: do something better with CDROMs *)
-			{ domid = this_domid ~xs; attach_info = { Storage_interface.params=""; xenstore_data=[]; } }
+			{ domid = this_domid ~xs; attach_info = { Storage_interface.params=""; backend=None; xenstore_data=[]; } }
 		| Some (Local path) ->
-			{ domid = this_domid ~xs; attach_info = { Storage_interface.params=path; xenstore_data=[]; } }
+			{ domid = this_domid ~xs; attach_info = { Storage_interface.params=path; backend=None; xenstore_data=[]; } }
 		| Some (VDI path) ->
 			let sr, vdi = Storage.get_disk_by_name task path in
 			let dp = Storage.id_of vm vbd.id in
