@@ -134,7 +134,7 @@ module TASK = struct
 		debug_info = [
 			"cancel_points_seen", string_of_int x.cancel_points_seen
 		];
-		trace = x.trace;
+		backtrace = Sexplib.Sexp.to_string (Backtrace.sexp_of_t x.backtrace);
 	}
 	let cancel _ dbg id =
 		Xenops_task.cancel tasks id

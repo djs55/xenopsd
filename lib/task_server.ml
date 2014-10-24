@@ -82,7 +82,7 @@ type t = {
 	mutable cancel: (unit -> unit) list;           (* attempt to cancel [f] *)
 	mutable cancel_points_seen: int;               (* incremented every time we pass a cancellation point *)
 	test_cancel_at: int option;                    (* index of the cancel point to trigger *)
-	mutable trace: string list;                    (* on error, a backtrace *)
+	mutable backtrace: Backtrace.t;                (* on error, a backtrace *)
 }
 
 type tasks = {
@@ -136,7 +136,7 @@ let add tasks dbg (f: t -> Interface.Task.async_result option) =
 				clear_cancel_trigger tasks; (* one shot *)
 				Some n
 			| _ -> None);
-		trace = [];
+		backtrace = Backtrace.empty;
 	} in
 	Mutex.execute tasks.m
 		(fun () ->
@@ -156,7 +156,7 @@ let run item =
 		| e ->
 			Backtrace.is_important e;
 			error "Task %s failed; %s" item.id (Printexc.to_string e);
-			item.trace <- item.trace @ (Backtrace.get e);
+			item.backtrace <- Backtrace.get e;
 			let e = e |> Interface.exnty_of_exn |> Interface.Exception.rpc_of_exnty in
 			item.state <- Interface.Task.Failed e
 
