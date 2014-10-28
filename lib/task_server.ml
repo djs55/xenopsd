@@ -156,7 +156,7 @@ let run item =
 		| e ->
 			Backtrace.is_important e;
 			error "Task %s failed; %s" item.id (Printexc.to_string e);
-			item.backtrace <- Backtrace.get e;
+			item.backtrace <- Backtrace.remove e;
 			let e = e |> Interface.exnty_of_exn |> Interface.Exception.rpc_of_exnty in
 			item.state <- Interface.Task.Failed e
 
